@@ -15,6 +15,10 @@
     gap: 2rem;
 }
 
+.comment {
+    display: flex;
+    }
+
 .fav {
     width: 30px;
     height: 30px;
