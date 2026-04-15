@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import '../App.css'
 import { data } from 'react-router';
 
+// First coment in feature
+
 function Card({ character, func }) {
     return (
         <div className="card">
