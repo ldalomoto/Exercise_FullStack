@@ -26,9 +26,18 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/consulta', async (req, res) => {
+    try {
+        const response = await fetch('https://rickandmortyapi.com/api/character')
+        const data = await response.json()
+        res.json(data)
+    } catch (error) {
+        console.log('se dio el error: ', error)
+    }
+});
+
 app.post("/favorites", async (req, res) => {
     const favorite = req.body;
-    console.log(favorite)
     await redis.lpush("favorites", JSON.stringify(favorite));
     res.json({ message: "Favorite added successfully " + favorite});
 });
@@ -39,6 +48,7 @@ app.delete("/delete-favorite/:id", async (req, res) => {
     const parsedFavorites = favorites.map(fav => JSON.parse(fav));
     const updatedFavorites = parsedFavorites.filter(fav => fav.id !== id);
     await redis.del("favorites");
+
     for (const fav of updatedFavorites) {
         await redis.rpush("favorites", JSON.stringify(fav));
     }

@@ -21,8 +21,43 @@ function Card({ character, func }) {
     )
 }
 
+function Search({ func }) {
+    const [value, setValue] = useState('')
+    return(
+        <>
+            <div className='div_buscador'>
+                Buscador: 
+                <input className='input_Search' 
+                placeholder='ingresa tu busqueda' 
+                type='text' value={value} 
+                onChange={(e) => 
+                (setValue(e.target.value),
+                console.log(e.target.value))} />
+
+                <button className='boton_search' onClick={() => func({value})}>Buscar </button>
+            </div>
+        </>
+    );
+}
+
+function Render_Character ({ characters, handleFavoriteChange }){
+    return(
+        <div className="cards-container">
+            {characters.map(
+                (char) => (
+                    <span className="cards" key={char.id}>
+                        <Card character={char} func={handleFavoriteChange} />
+                    </span>
+                )
+            )}
+        </div>
+    );
+}
+
 export default function Principal() {
     const [character, setCharacter] = useState([]);
+
+    const [charFilter, setCharFilter] = useState([])
 
     useEffect(() => {
         fetch('http://localhost:3000/')
@@ -60,20 +95,18 @@ export default function Principal() {
         }
     }
 
+    function Filtrar({ value }) {
+        const filtrados = character.filter((char => char.name.toLowerCase().includes(value.toLowerCase())));
+        setCharFilter(filtrados)
+    }
+
     return (
         <>
             <div className="title">
                 <h1>Principal</h1>
             </div>
-            <div className="cards-container">
-                {character.map(
-                    (char) => (
-                        <span className="cards" key={char.id}>
-                            <Card character={char} func={handleFavoriteChange} />
-                        </span>
-                    )
-                )}
-            </div>
+            <Search func={Filtrar}/>
+            <Render_Character characters={charFilter.length > 0 ? charFilter : character} handleFavoriteChange={handleFavoriteChange}/>
         </>
     )
 }
